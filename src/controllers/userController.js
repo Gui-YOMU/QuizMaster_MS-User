@@ -1,8 +1,10 @@
 import { PrismaClient } from "../../generated/prisma/client.js";
 import { adapter } from "../../prisma/adapter.js";
+import bcrypt from "bcrypt";
 import { generateToken } from "../middlewares/generateToken.js";
+import { hashPasswordExtension } from "../../prisma/extensions/hashPasswordExtension.js";
 
-const prisma = new PrismaClient({ adapter });
+const prisma = new PrismaClient({ adapter }).$extends(hashPasswordExtension);
 
 export async function createUser(req, res) {
   const { lastName, firstName, surname, mail, password, confirmPassword } =
@@ -37,7 +39,7 @@ export async function login(req, res) {
       },
     });
     if (user) {
-      if (user.password === password) {
+      if (await bcrypt.compare(password, user.password)) {
         const token = generateToken({ id: user.id, role: user.role, time: Date() })
         res.json({ success: "Connexion effectuée avec succès.", token: token });
       } else {
