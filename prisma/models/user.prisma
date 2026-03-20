@@ -1,0 +1,20 @@
+model User {
+    id Int @id @default(autoincrement())
+    lastName String @db.VarChar(100)
+    firstName String @db.VarChar(100)
+    surname String? @db.VarChar(50) @unique
+    mail String @db.VarChar(150) @unique
+    password String @db.Text
+    role Role @default(player)
+    createdAt DateTime @default(now())
+    updatedAt DateTime?
+    quiz Quiz[]
+    rooms Room[]
+    teams Team[]
+}
+
+enum Role {
+    player
+    creator
+    admin
+}
