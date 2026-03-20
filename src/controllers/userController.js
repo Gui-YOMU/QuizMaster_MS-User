@@ -1,6 +1,7 @@
 import { PrismaClient } from "../../generated/prisma/client.js";
 import { adapter } from "../../prisma/adapter.js";
 import bcrypt from "bcrypt";
+import escape from "escape-html";
 import { generateToken } from "../middlewares/generateToken.js";
 import { hashPasswordExtension } from "../../prisma/extensions/hashPasswordExtension.js";
 
@@ -13,10 +14,10 @@ export async function createUser(req, res) {
     if (password === confirmPassword) {
       await prisma.user.create({
         data: {
-          lastName: lastName,
-          firstName: firstName,
-          surname: surname !== "" ? surname : null,
-          mail: mail,
+          lastName: escape(lastName),
+          firstName: escape(firstName),
+          surname: surname !== "" ? escape(surname) : null,
+          mail: escape(mail),
           password: password,
         },
       });
@@ -35,11 +36,11 @@ export async function login(req, res) {
   try {
     const user = await prisma.user.findUnique({
       where: {
-        mail: mail,
+        mail: escape(mail),
       },
     });
     if (user) {
-      if (await bcrypt.compare(password, user.password)) {
+      if (await bcrypt.compare(escape(password), user.password)) {
         const token = generateToken({ id: user.id, role: user.role, time: Date() })
         res.json({ success: "Connexion effectuée avec succès.", token: token });
       } else {
