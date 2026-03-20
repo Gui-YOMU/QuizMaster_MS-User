@@ -4,8 +4,9 @@ import bcrypt from "bcrypt";
 import escape from "escape-html";
 import { generateToken } from "../middlewares/generateToken.js";
 import { hashPasswordExtension } from "../../prisma/extensions/hashPasswordExtension.js";
+import { checkRegexExtension } from "../../prisma/extensions/checkRegexExtension.js";
 
-const prisma = new PrismaClient({ adapter }).$extends(hashPasswordExtension);
+const prisma = new PrismaClient({ adapter }).$extends(checkRegexExtension).$extends(hashPasswordExtension);
 
 export async function createUser(req, res) {
   const { lastName, firstName, surname, mail, password, confirmPassword } =
