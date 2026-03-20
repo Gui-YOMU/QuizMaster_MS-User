@@ -38,8 +38,7 @@ export async function login(req, res) {
     });
     if (user) {
       if (user.password === password) {
-        req.session.user = user.id;
-        const token = generateToken({ id: user.id, time: Date() })
+        const token = generateToken({ id: user.id, role: user.role, time: Date() })
         res.json({ success: "Connexion effectuée avec succès.", token: token });
       } else {
         throw new Error("Le mot de passe est incorrect.");

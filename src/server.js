@@ -20,5 +20,5 @@ app.use(userRouter);
 app.listen(PORT, (error) => {
   error
     ? console.error(error)
-    : console.log(`Connecté avec succcès au serveur localhost:${PORT}.`);
+    : console.log(`Connecté avec succès au serveur localhost:${PORT}.`);
 });
